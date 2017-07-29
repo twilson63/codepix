@@ -1,6 +1,6 @@
 {
   "name": "codepix",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "code pixel component",
   "license": "MIT",
   "main": "dist/bundle.cjs.js",
