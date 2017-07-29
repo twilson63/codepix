@@ -1,10 +1,10 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react')) :
-	typeof define === 'function' && define.amd ? define(['react'], factory) :
-	(global.codepix = factory(global.React));
-}(this, (function (React) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react'), require('recompose')) :
+	typeof define === 'function' && define.amd ? define(['react', 'recompose'], factory) :
+	(global.codepix = factory(global.React,global.recompose));
+}(this, (function (React,recompose) { 'use strict';
 
-var React__default = 'default' in React ? React['default'] : React;
+React = React && React.hasOwnProperty('default') ? React['default'] : React;
 
 var _isPlaceholder = function _isPlaceholder(a) {
   return a != null &&
@@ -9249,395 +9249,6 @@ var index$1 = {
   zipWith: zipWith
 };
 
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @typechecks
- *
- */
-
-/*eslint-disable no-self-compare */
-
-/**
- * Copyright 2015, Yahoo! Inc.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */
-
-var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-
-
-
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var index$3 = createCommonjsModule(function (module, exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var createChangeEmitter = exports.createChangeEmitter = function createChangeEmitter() {
-  var currentListeners = [];
-  var nextListeners = currentListeners;
-
-  function ensureCanMutateNextListeners() {
-    if (nextListeners === currentListeners) {
-      nextListeners = currentListeners.slice();
-    }
-  }
-
-  function listen(listener) {
-    if (typeof listener !== 'function') {
-      throw new Error('Expected listener to be a function.');
-    }
-
-    var isSubscribed = true;
-
-    ensureCanMutateNextListeners();
-    nextListeners.push(listener);
-
-    return function () {
-      if (!isSubscribed) {
-        return;
-      }
-
-      isSubscribed = false;
-
-      ensureCanMutateNextListeners();
-      var index = nextListeners.indexOf(listener);
-      nextListeners.splice(index, 1);
-    };
-  }
-
-  function emit() {
-    var arguments$1 = arguments;
-
-    currentListeners = nextListeners;
-    var listeners = currentListeners;
-    for (var i = 0; i < listeners.length; i++) {
-      listeners[i].apply(listeners, arguments$1);
-    }
-  }
-
-  return {
-    listen: listen,
-    emit: emit
-  };
-};
-});
-
-var ponyfill = createCommonjsModule(function (module, exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports['default'] = symbolObservablePonyfill;
-function symbolObservablePonyfill(root) {
-	var result;
-	var _Symbol = root.Symbol;
-
-	if (typeof _Symbol === 'function') {
-		if (_Symbol.observable) {
-			result = _Symbol.observable;
-		} else {
-			result = _Symbol('observable');
-			_Symbol.observable = result;
-		}
-	} else {
-		result = '@@observable';
-	}
-
-	return result;
-}
-});
-
-var index$6 = createCommonjsModule(function (module, exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-
-
-var _ponyfill2 = _interopRequireDefault(ponyfill);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var root; /* global window */
-
-
-if (typeof self !== 'undefined') {
-  root = self;
-} else if (typeof window !== 'undefined') {
-  root = window;
-} else if (typeof commonjsGlobal !== 'undefined') {
-  root = commonjsGlobal;
-} else {
-  root = module;
-}
-
-var result = (0, _ponyfill2['default'])(root);
-exports['default'] = result;
-});
-
-var setStatic = function setStatic(key, value) {
-  return function (BaseComponent) {
-    /* eslint-disable no-param-reassign */
-    BaseComponent[key] = value;
-    /* eslint-enable no-param-reassign */
-    return BaseComponent;
-  };
-};
-
-var setDisplayName = function setDisplayName(displayName) {
-  return setStatic('displayName', displayName);
-};
-
-var getDisplayName = function getDisplayName(Component$$1) {
-  if (typeof Component$$1 === 'string') {
-    return Component$$1;
-  }
-
-  if (!Component$$1) {
-    return undefined;
-  }
-
-  return Component$$1.displayName || Component$$1.name || 'Component';
-};
-
-var wrapDisplayName = function wrapDisplayName(BaseComponent, hocName) {
-  return hocName + '(' + getDisplayName(BaseComponent) + ')';
-};
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-
-
-
-
-
-
-
-
-
-
-
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-
-
-
-
-
-
-
-
-var _extends = Object.assign || function (target) {
-  var arguments$1 = arguments;
-
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments$1[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
-
-
-
-var inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) { Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-};
-
-
-
-
-
-
-
-
-
-var possibleConstructorReturn = function (self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-};
-
-var createEagerElementUtil = function createEagerElementUtil(hasKey, isReferentiallyTransparent, type, props, children) {
-  if (!hasKey && isReferentiallyTransparent) {
-    if (children) {
-      return type(_extends({}, props, { children: children }));
-    }
-    return type(props);
-  }
-
-  var Component$$1 = type;
-
-  if (children) {
-    return React__default.createElement(
-      Component$$1,
-      props,
-      children
-    );
-  }
-
-  return React__default.createElement(Component$$1, props);
-};
-
-var isClassComponent = function isClassComponent(Component$$1) {
-  return Boolean(Component$$1 && Component$$1.prototype && _typeof(Component$$1.prototype.isReactComponent) === 'object');
-};
-
-var isReferentiallyTransparentFunctionComponent = function isReferentiallyTransparentFunctionComponent(Component$$1) {
-  return Boolean(typeof Component$$1 === 'function' && !isClassComponent(Component$$1) && !Component$$1.defaultProps && !Component$$1.contextTypes && (process.env.NODE_ENV === 'production' || !Component$$1.propTypes));
-};
-
-var createFactory = function createFactory(type) {
-  var isReferentiallyTransparent = isReferentiallyTransparentFunctionComponent(type);
-  return function (p, c) {
-    return createEagerElementUtil(false, isReferentiallyTransparent, type, p, c);
-  };
-};
-
-var withReducer = function withReducer(stateName, dispatchName, reducer, initialState) {
-  return function (BaseComponent) {
-    var factory = createFactory(BaseComponent);
-
-    var WithReducer = function (_Component) {
-      inherits(WithReducer, _Component);
-
-      function WithReducer() {
-        var arguments$1 = arguments;
-
-        var _temp, _this, _ret;
-
-        classCallCheck(this, WithReducer);
-
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments$1[_key];
-        }
-
-        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.state = {
-          stateValue: _this.initializeStateValue()
-        }, _this.dispatch = function (action) {
-          return _this.setState(function (_ref) {
-            var stateValue = _ref.stateValue;
-            return {
-              stateValue: reducer(stateValue, action)
-            };
-          });
-        }, _temp), possibleConstructorReturn(_this, _ret);
-      }
-
-      WithReducer.prototype.initializeStateValue = function initializeStateValue() {
-        if (initialState !== undefined) {
-          return typeof initialState === 'function' ? initialState(this.props) : initialState;
-        }
-        return reducer(undefined, { type: '@@recompose/INIT' });
-      };
-
-      WithReducer.prototype.render = function render() {
-        var _babelHelpers$extends;
-
-        return factory(_extends({}, this.props, (_babelHelpers$extends = {}, _babelHelpers$extends[stateName] = this.state.stateValue, _babelHelpers$extends[dispatchName] = this.dispatch, _babelHelpers$extends)));
-      };
-
-      return WithReducer;
-    }(React.Component);
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'withReducer'))(WithReducer);
-    }
-    return WithReducer;
-  };
-};
-
-var Nothing = function (_Component) {
-  inherits(Nothing, _Component);
-
-  function Nothing() {
-    classCallCheck(this, Nothing);
-    return possibleConstructorReturn(this, _Component.apply(this, arguments));
-  }
-
-  Nothing.prototype.render = function render() {
-    return null;
-  };
-
-  return Nothing;
-}(React.Component);
-
-/* eslint-disable no-console */
-var lifecycle = function lifecycle(spec) {
-  return function (BaseComponent) {
-    var factory = createFactory(BaseComponent);
-
-    if (process.env.NODE_ENV !== 'production' && spec.hasOwnProperty('render')) {
-      console.error('lifecycle() does not support the render method; its behavior is to ' + 'pass all props and state to the base component.');
-    }
-
-    var Lifecycle = function (_Component) {
-      inherits(Lifecycle, _Component);
-
-      function Lifecycle() {
-        classCallCheck(this, Lifecycle);
-        return possibleConstructorReturn(this, _Component.apply(this, arguments));
-      }
-
-      Lifecycle.prototype.render = function render() {
-        return factory(_extends({}, this.props, this.state));
-      };
-
-      return Lifecycle;
-    }(React.Component);
-
-    Object.keys(spec).forEach(function (hook) {
-      return Lifecycle.prototype[hook] = spec[hook];
-    });
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'lifecycle'))(Lifecycle);
-    }
-    return Lifecycle;
-  };
-};
-
 var SIZE = 20;
 
 var set = index$1.set;
@@ -9659,31 +9270,31 @@ var ifElse = index$1.ifElse;
 var identity = index$1.identity;
 var prop = index$1.prop;
 
-var Component$1 = function (props) {
+var Component = function (props) {
   var handleClick = function (name) {
     props.app.clicks[name]();
   };
   return (
-    React__default.createElement( 'section', { className: "animated fadeIn flex-column justify-between items-center" },
-      React__default.createElement( 'header', {
+    React.createElement( 'section', { className: "animated fadeIn flex-column justify-between items-center" },
+      React.createElement( 'header', {
         className: "h3 flex items-center justify-center bg-light-purple white animated slideInDown", onClick: function (e) {
           props.dispatch({ type: 'TOGGLE_GRID' });
         } },
-        React__default.createElement( 'h1', { className: "tracked ttu avenir" }, "Pixel Fun")
+        React.createElement( 'h1', { className: "tracked ttu avenir" }, "Pixel Fun")
       ),
-      React__default.createElement( 'section', null,
-        React__default.createElement( 'p', { className: "tc" }, "Output"),
-        React__default.createElement( 'div', { className: "measure center ba br2 pa2 ma2 w-100" },
-          React__default.createElement( 'pre', null, props.app.output )
+      React.createElement( 'section', null,
+        React.createElement( 'p', { className: "tc" }, "Output"),
+        React.createElement( 'div', { className: "measure center ba br2 pa2 ma2 w-100" },
+          React.createElement( 'pre', null, props.app.output )
         ),
 
         props.app.gridIsVisible &&
-          React__default.createElement( 'main', { className: "flex items-center justify-center" },
-            React__default.createElement( 'div', { className: "pv2" },
+          React.createElement( 'main', { className: "flex items-center justify-center" },
+            React.createElement( 'div', { className: "pv2" },
               map(
-                function (row) { return React__default.createElement( 'div', { className: "cf" },
+                function (row) { return React.createElement( 'div', { className: "cf" },
                     map(
-                      function (cell) { return React__default.createElement( 'div', {
+                      function (cell) { return React.createElement( 'div', {
                           className: "fl w1 h1 w2-ns h2-ns ba b--dotted animated zoomIn", style: { backgroundColor: cell.color } }); },
                       row
                     )
@@ -9693,17 +9304,17 @@ var Component$1 = function (props) {
             )
           )
       ),
-      React__default.createElement( 'footer', { className: "flex items-center justify-center pv2" },
-        React__default.createElement( 'div', { className: "ml2 animated slideInUp flex justify-between bg-light-gray pa4 br3" },
-          React__default.createElement( 'input', {
+      React.createElement( 'footer', { className: "flex items-center justify-center pv2" },
+        React.createElement( 'div', { className: "ml2 animated slideInUp flex justify-between bg-light-gray pa4 br3" },
+          React.createElement( 'input', {
             value: props.app.input, onChange: function (e) { return props.dispatch({
                 type: 'SET_INPUT',
                 payload: e.target.value
               }); }, className: "input-reset pa1 ba pv1 br1 mh2 db mb2" }),
-          React__default.createElement( 'div', null,
-            React__default.createElement( 'button', {
+          React.createElement( 'div', null,
+            React.createElement( 'button', {
               onClick: function (e) { return handleClick('a'); }, className: "bg-gray ba br-100 ph2 pv1 mh2 white" }, "a"),
-            React__default.createElement( 'button', {
+            React.createElement( 'button', {
               onClick: function (e) { return handleClick('b'); }, className: "bg-gray ba br-100 ph2 pv1 mh2 white" }, "b")
           )
         )
@@ -9723,7 +9334,7 @@ var isMatch = function (a) { return function (b) { return and(equals(a.row, b.ro
 var typeIs = propEq('type');
 
 var enhance = compose(
-  withReducer('app', 'dispatch', function (state, action) {
+  recompose.withReducer('app', 'dispatch', function (state, action) {
     if ( state === void 0 ) state = {};
 
     return {
@@ -9740,7 +9351,7 @@ var enhance = compose(
       gridIsVisible: gridVisibleReducer(state.gridIsVisible || true, action)
     }
   }),
-  lifecycle({
+  recompose.lifecycle({
     componentDidMount: function componentDidMount() {
       var props = this.props;
       props.actions({
@@ -9767,7 +9378,7 @@ var enhance = compose(
   })
 );
 
-var index = enhance(Component$1);
+var index = enhance(Component);
 
 // reducers
 
