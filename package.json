@@ -2,7 +2,6 @@
   "name": "codepix",
   "version": "1.0.0",
   "description": "code pixel component",
-  "repository": {},
   "license": "MIT",
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.es.js",
@@ -27,5 +26,15 @@
       "es2015",
       "react"
     ]
-  }
+  },
+  "keywords": ["learn2code"],
+  "author": "Tom",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/twilson63/codepix.git"
+  },
+  "bugs": {
+    "url": "https://github.com/twilson63/codepix/issues"
+  },
+  "homepage": "https://github.com/twilson63/codepix#readme"
 }
