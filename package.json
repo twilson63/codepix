@@ -1,0 +1,31 @@
+{
+  "name": "codepix",
+  "version": "1.0.0",
+  "description": "code pixel component",
+  "repository": {},
+  "license": "MIT",
+  "main": "dist/bundle.cjs.js",
+  "module": "dist/bundle.es.js",
+  "scripts": {
+    "build": "rollup -c ./rollup.config.js -n codepix",
+    "test": "babel-tape-runner \"src/**/*test.js\" | faucet",
+    "dev": "rollup -c -w ./rollup.config.js -n codepix"
+  },
+  "devDependencies": {
+    "ramda": "^0.24.1",
+    "recompose": "^0.24.0",
+    "rollup": "^0.45.2"
+  },
+  "dependencies": {
+    "rollup-plugin-buble": "^0.15.0",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-jsx": "^1.0.3",
+    "rollup-plugin-node-resolve": "^3.0.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "react"
+    ]
+  }
+}
