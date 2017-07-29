@@ -5,7 +5,7 @@ import commonjs from 'rollup-plugin-commonjs'
 
 export default {
   entry: 'src/index.js',
-  external: ['react'],
+  external: ['react', 'recompose'],
   plugins: [
     buble(),
     jsx({ factory: 'React.createElement' }),
