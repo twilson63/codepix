@@ -9275,9 +9275,9 @@ var Component = function (props) {
     props.app.clicks[name]();
   };
   return (
-    React.createElement( 'section', { className: "animated fadeIn flex-column justify-between items-center" },
+    React.createElement( 'section', { className: "flex-column justify-between items-center" },
       React.createElement( 'header', {
-        className: "h3 flex items-center justify-center bg-light-purple white animated slideInDown", onClick: function (e) {
+        className: "h3 flex items-center justify-center bg-light-purple white", onClick: function (e) {
           props.dispatch({ type: 'TOGGLE_GRID' });
         } },
         React.createElement( 'h1', { className: "tracked ttu avenir" }, "Pixel Fun")
@@ -9305,7 +9305,7 @@ var Component = function (props) {
           )
       ),
       React.createElement( 'footer', { className: "flex items-center justify-center pv2" },
-        React.createElement( 'div', { className: "ml2 animated slideInUp flex justify-between bg-light-gray pa4 br3" },
+        React.createElement( 'div', { className: "ml2 flex justify-between bg-light-gray pa4 br3" },
           React.createElement( 'input', {
             value: props.app.input, onChange: function (e) { return props.dispatch({
                 type: 'SET_INPUT',
