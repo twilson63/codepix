@@ -31,9 +31,9 @@ const Component = props => {
     props.app.clicks[name]()
   }
   return (
-    <section className="animated fadeIn flex-column justify-between items-center">
+    <section className="flex-column justify-between items-center">
       <header
-        className="h3 flex items-center justify-center bg-light-purple white animated slideInDown"
+        className="h3 flex items-center justify-center bg-light-purple white"
         onClick={e => {
           props.dispatch({ type: 'TOGGLE_GRID' })
         }}
@@ -67,7 +67,7 @@ const Component = props => {
           </main>}
       </section>
       <footer className="flex items-center justify-center pv2">
-        <div className="ml2 animated slideInUp flex justify-between bg-light-gray pa4 br3">
+        <div className="ml2 flex justify-between bg-light-gray pa4 br3">
           <input
             value={props.app.input}
             onChange={e =>
