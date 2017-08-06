@@ -84,6 +84,8 @@ const Component = props => {
                     {map(
                       cell =>
                         <div
+                          onClick={e =>
+                            props.app.pixelClick && props.app.pixelClick(cell)}
                           className="fl w1 h1 w2-ns h2-ns ba b--dotted animated zoomIn"
                           style={{ backgroundColor: cell.color }}
                         />,
@@ -117,6 +119,7 @@ const enhance = compose(
       label: labelReducer(state.label || 'Input', action),
       board: boardReducer(state.board || defaultBoard, action),
       input: inputReducer(state.input || '', action),
+      pixelClick: pixelClickReducer(state.pixelClick, action),
       clicks: clicksReducer(
         state.clicks || { a: () => console.log('args') },
         action
@@ -141,6 +144,12 @@ const enhance = compose(
           compose(nth(col), nth(row), prop('board'))(props.app),
         getInput: () => document.body.querySelector('input').value,
         setInput: v => props.dispatch({ type: 'SET_INPUT', payload: v }),
+        onPixelClick: fn => {
+          props.dispatch({
+            type: 'SET_PIXEL_CLICK',
+            payload: fn
+          })
+        },
         onClick: (name, fn) => {
           props.dispatch({
             type: 'SET_CLICK',
@@ -178,6 +187,13 @@ function clicksReducer(state, action) {
         prop('payload')
       )
     ],
+    [T, always(state)]
+  ])(action)
+}
+
+function pixelClickReducer(state, action) {
+  return cond([
+    [propEq('type', 'SET_PIXEL_CLICK'), prop('payload')],
     [T, always(state)]
   ])(action)
 }
