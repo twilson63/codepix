@@ -9270,17 +9270,31 @@ var Component = function (props) {
     props.app.clicks[name]();
   };
   return (
-    React.createElement( 'section', { className: "flex-column justify-between items-center" },
+    React.createElement( 'section', { className: "flex-column justify-start items-center" },
       React.createElement( 'header', {
         className: "h3 flex items-center justify-center bg-light-purple white", onClick: function (e) {
           props.dispatch({ type: 'TOGGLE_GRID' });
         } },
-        React.createElement( 'h1', { className: "tracked ttu avenir" }, "Pixel Fun")
+        React.createElement( 'h1', { className: "tracked ttu avenir" }, props.app.title)
       ),
       React.createElement( 'section', null,
-        React.createElement( 'p', { className: "tc" }, "Output"),
-        React.createElement( 'div', { className: "measure center ba br2 pa2 ma2 w-100" },
-          React.createElement( 'pre', null, props.app.output )
+        React.createElement( 'div', { className: "flex items-center justify-center" },
+          React.createElement( 'div', { className: "ml2 flex justify-between bg-light-gray pa2 br3" },
+            React.createElement( 'input', {
+              value: props.app.input, onChange: function (e) { return props.dispatch({
+                  type: 'SET_INPUT',
+                  payload: e.target.value
+                }); }, className: "input-reset pa1 ba pv1 br1 mh2 db mb2" }),
+            React.createElement( 'div', null,
+              React.createElement( 'button', {
+                onClick: function (e) { return handleClick('a'); }, className: "bg-gray ba br-100 ph2 pv1 mh2 white" }, "a"),
+              React.createElement( 'button', {
+                onClick: function (e) { return handleClick('b'); }, className: "bg-gray ba br-100 ph2 pv1 mh2 white" }, "b")
+            )
+          ),
+          React.createElement( 'div', { className: "ba br2 ph2 ma2 bg-black-80 white" },
+            React.createElement( 'pre', null, React.createElement( 'code', null, props.app.output ) )
+          )
         ),
 
         props.app.gridIsVisible &&
@@ -9299,22 +9313,7 @@ var Component = function (props) {
             )
           )
       ),
-      React.createElement( 'footer', { className: "flex items-center justify-center pv2" },
-        React.createElement( 'div', { className: "ml2 flex justify-between bg-light-gray pa4 br3" },
-          React.createElement( 'input', {
-            value: props.app.input, onChange: function (e) { return props.dispatch({
-                type: 'SET_INPUT',
-                payload: e.target.value
-              }); }, className: "input-reset pa1 ba pv1 br1 mh2 db mb2" }),
-          React.createElement( 'div', null,
-            React.createElement( 'button', {
-              onClick: function (e) { return handleClick('a'); }, className: "bg-gray ba br-100 ph2 pv1 mh2 white" }, "a"),
-            React.createElement( 'button', {
-              onClick: function (e) { return handleClick('b'); }, className: "bg-gray ba br-100 ph2 pv1 mh2 white" }, "b")
-          )
-        )
-
-      )
+      React.createElement( 'footer', { className: "flex items-center justify-center pv2" })
     )
   )
 };
@@ -9333,6 +9332,7 @@ var enhance = compose(
     if ( state === void 0 ) state = {};
 
     return {
+      title: titleReducer(state.title || 'Pixel Fun', action),
       board: boardReducer(state.board || defaultBoard, action),
       input: inputReducer(state.input || '', action),
       clicks: clicksReducer(
@@ -9350,12 +9350,13 @@ var enhance = compose(
     componentDidMount: function componentDidMount() {
       var props = this.props;
       props.actions({
+        title: function (s) { return props.dispatch({ type: 'SET_TITLE', payload: s }); },
         setPixel: function (row, col, color) { return props.dispatch({
             type: 'SET_CELL_COLOR',
             payload: { row: row, col: col, color: color }
           }); },
         getPixel: function (row, col) { return compose(nth(col), nth(row), prop('board'))(props.app); },
-        getInput: function () { return props.app.input; },
+        getInput: function () { return document.body.querySelector('input').value; },
         setInput: function (v) { return props.dispatch({ type: 'SET_INPUT', payload: v }); },
         onClick: function (name, fn) {
           props.dispatch({
@@ -9424,6 +9425,14 @@ function gridVisibleReducer(state, action) {
   if ( state === void 0 ) state = false;
 
   return cond([[typeIs('TOGGLE_GRID'), always(!state)], [T, always(state)]])(
+    action
+  )
+}
+
+function titleReducer(state, action) {
+  if ( state === void 0 ) state = '';
+
+  return cond([[typeIs('SET_TITLE'), prop('payload')], [T, always(state)]])(
     action
   )
 }
