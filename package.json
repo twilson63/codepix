@@ -9,7 +9,7 @@
     "build": "rollup -c ./rollup.config.js -n codepix",
     "dev": "rollup -c -w ./rollup.config.js -n codepix",
     "test": "babel-tape-runner \"src/**/*test.js\" | faucet",
-    "preversion": "npm test && npm build",
+    "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "git push origin --all; git push origin --tags"
   },
