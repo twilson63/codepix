@@ -1,6 +1,7 @@
 import React from 'react'
 import R from 'ramda'
 import { withReducer, lifecycle } from 'recompose'
+import { TextField } from 't63'
 
 const SIZE = 20
 
@@ -42,8 +43,10 @@ const Component = props => {
       </header>
       <section>
         <div className="flex items-center justify-center">
-          <div className="ml2 flex justify-between bg-light-gray pa2 br3">
-            <input
+          <div className="ml2 flex justify-between bg-light-gray pa2 br3 mt2">
+            <TextField
+              name={props.app.label}
+              helpTxt={props.app.help}
               value={props.app.input}
               onChange={e =>
                 props.dispatch({
@@ -52,7 +55,7 @@ const Component = props => {
                 })}
               className="input-reset pa1 ba pv1 br1 mh2 db mb2"
             />
-            <div>
+            <div className="pa4">
               <button
                 onClick={e => handleClick('a')}
                 className="bg-gray ba br-100 ph2 pv1 mh2 white"
@@ -68,7 +71,7 @@ const Component = props => {
             </div>
           </div>
           <div className="ba br2 ph2 ma2 bg-black-80 white">
-            <pre><code>{props.app.output}</code></pre>
+            {props.app.output && <pre><code>{props.app.output}</code></pre>}
           </div>
         </div>
 
@@ -110,16 +113,15 @@ const enhance = compose(
   withReducer('app', 'dispatch', (state = {}, action) => {
     return {
       title: titleReducer(state.title || 'Pixel Fun', action),
+      help: helpReducer(state.help || '', action),
+      label: labelReducer(state.label || 'Input', action),
       board: boardReducer(state.board || defaultBoard, action),
       input: inputReducer(state.input || '', action),
       clicks: clicksReducer(
         state.clicks || { a: () => console.log('args') },
         action
       ),
-      output: outputReducer(
-        state.output || 'Welcome to Pixel Programming!',
-        action
-      ),
+      output: outputReducer(state.output || null, action),
       gridIsVisible: gridVisibleReducer(state.gridIsVisible || true, action)
     }
   }),
@@ -127,7 +129,9 @@ const enhance = compose(
     componentDidMount() {
       const props = this.props
       props.actions({
-        title: s => props.dispatch({ type: 'SET_TITLE', payload: s }),
+        title: payload => props.dispatch({ type: 'SET_TITLE', payload }),
+        label: payload => props.dispatch({ type: 'SET_LABEL', payload }),
+        help: payload => props.dispatch({ type: 'SET_HELP', payload }),
         setPixel: (row, col, color) =>
           props.dispatch({
             type: 'SET_CELL_COLOR',
@@ -205,4 +209,18 @@ function titleReducer(state = '', action) {
   return cond([[typeIs('SET_TITLE'), prop('payload')], [T, always(state)]])(
     action
   )
+}
+
+function labelReducer(state = '', action) {
+  return cond([
+    [propEq('type', 'SET_LABEL'), prop('payload')],
+    [T, always(state)]
+  ])(action)
+}
+
+function helpReducer(state = '', action) {
+  return cond([
+    [propEq('type', 'SET_HELP'), prop('payload')],
+    [T, always(state)]
+  ])(action)
 }

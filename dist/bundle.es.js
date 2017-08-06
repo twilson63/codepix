@@ -1,5 +1,6 @@
 import React from 'react';
 import { lifecycle, withReducer } from 'recompose';
+import { TextField } from 't63';
 
 var _isPlaceholder = function _isPlaceholder(a) {
   return a != null &&
@@ -9279,13 +9280,13 @@ var Component = function (props) {
       ),
       React.createElement( 'section', null,
         React.createElement( 'div', { className: "flex items-center justify-center" },
-          React.createElement( 'div', { className: "ml2 flex justify-between bg-light-gray pa2 br3" },
-            React.createElement( 'input', {
-              value: props.app.input, onChange: function (e) { return props.dispatch({
+          React.createElement( 'div', { className: "ml2 flex justify-between bg-light-gray pa2 br3 mt2" },
+            React.createElement( TextField, {
+              name: props.app.label, helpTxt: props.app.help, value: props.app.input, onChange: function (e) { return props.dispatch({
                   type: 'SET_INPUT',
                   payload: e.target.value
                 }); }, className: "input-reset pa1 ba pv1 br1 mh2 db mb2" }),
-            React.createElement( 'div', null,
+            React.createElement( 'div', { className: "pa4" },
               React.createElement( 'button', {
                 onClick: function (e) { return handleClick('a'); }, className: "bg-gray ba br-100 ph2 pv1 mh2 white" }, "a"),
               React.createElement( 'button', {
@@ -9293,7 +9294,7 @@ var Component = function (props) {
             )
           ),
           React.createElement( 'div', { className: "ba br2 ph2 ma2 bg-black-80 white" },
-            React.createElement( 'pre', null, React.createElement( 'code', null, props.app.output ) )
+            props.app.output && React.createElement( 'pre', null, React.createElement( 'code', null, props.app.output ) )
           )
         ),
 
@@ -9333,16 +9334,15 @@ var enhance = compose(
 
     return {
       title: titleReducer(state.title || 'Pixel Fun', action),
+      help: helpReducer(state.help || '', action),
+      label: labelReducer(state.label || 'Input', action),
       board: boardReducer(state.board || defaultBoard, action),
       input: inputReducer(state.input || '', action),
       clicks: clicksReducer(
         state.clicks || { a: function () { return console.log('args'); } },
         action
       ),
-      output: outputReducer(
-        state.output || 'Welcome to Pixel Programming!',
-        action
-      ),
+      output: outputReducer(state.output || null, action),
       gridIsVisible: gridVisibleReducer(state.gridIsVisible || true, action)
     }
   }),
@@ -9350,7 +9350,9 @@ var enhance = compose(
     componentDidMount: function componentDidMount() {
       var props = this.props;
       props.actions({
-        title: function (s) { return props.dispatch({ type: 'SET_TITLE', payload: s }); },
+        title: function (payload) { return props.dispatch({ type: 'SET_TITLE', payload: payload }); },
+        label: function (payload) { return props.dispatch({ type: 'SET_LABEL', payload: payload }); },
+        help: function (payload) { return props.dispatch({ type: 'SET_HELP', payload: payload }); },
         setPixel: function (row, col, color) { return props.dispatch({
             type: 'SET_CELL_COLOR',
             payload: { row: row, col: col, color: color }
@@ -9435,6 +9437,24 @@ function titleReducer(state, action) {
   return cond([[typeIs('SET_TITLE'), prop('payload')], [T, always(state)]])(
     action
   )
+}
+
+function labelReducer(state, action) {
+  if ( state === void 0 ) state = '';
+
+  return cond([
+    [propEq('type', 'SET_LABEL'), prop('payload')],
+    [T, always(state)]
+  ])(action)
+}
+
+function helpReducer(state, action) {
+  if ( state === void 0 ) state = '';
+
+  return cond([
+    [propEq('type', 'SET_HELP'), prop('payload')],
+    [T, always(state)]
+  ])(action)
 }
 
 export default index;
