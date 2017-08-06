@@ -31,19 +31,45 @@ const Component = props => {
     props.app.clicks[name]()
   }
   return (
-    <section className="flex-column justify-between items-center">
+    <section className="flex-column justify-start items-center">
       <header
         className="h3 flex items-center justify-center bg-light-purple white"
         onClick={e => {
           props.dispatch({ type: 'TOGGLE_GRID' })
         }}
       >
-        <h1 className="tracked ttu avenir">Pixel Fun</h1>
+        <h1 className="tracked ttu avenir">{props.app.title}</h1>
       </header>
       <section>
-        <p className="tc">Output</p>
-        <div className="measure center ba br2 pa2 ma2 w-100">
-          <pre>{props.app.output}</pre>
+        <div className="flex items-center justify-center">
+          <div className="ml2 flex justify-between bg-light-gray pa2 br3">
+            <input
+              value={props.app.input}
+              onChange={e =>
+                props.dispatch({
+                  type: 'SET_INPUT',
+                  payload: e.target.value
+                })}
+              className="input-reset pa1 ba pv1 br1 mh2 db mb2"
+            />
+            <div>
+              <button
+                onClick={e => handleClick('a')}
+                className="bg-gray ba br-100 ph2 pv1 mh2 white"
+              >
+                a
+              </button>
+              <button
+                onClick={e => handleClick('b')}
+                className="bg-gray ba br-100 ph2 pv1 mh2 white"
+              >
+                b
+              </button>
+            </div>
+          </div>
+          <div className="ba br2 ph2 ma2 bg-black-80 white">
+            <pre><code>{props.app.output}</code></pre>
+          </div>
         </div>
 
         {props.app.gridIsVisible &&
@@ -66,34 +92,7 @@ const Component = props => {
             </div>
           </main>}
       </section>
-      <footer className="flex items-center justify-center pv2">
-        <div className="ml2 flex justify-between bg-light-gray pa4 br3">
-          <input
-            value={props.app.input}
-            onChange={e =>
-              props.dispatch({
-                type: 'SET_INPUT',
-                payload: e.target.value
-              })}
-            className="input-reset pa1 ba pv1 br1 mh2 db mb2"
-          />
-          <div>
-            <button
-              onClick={e => handleClick('a')}
-              className="bg-gray ba br-100 ph2 pv1 mh2 white"
-            >
-              a
-            </button>
-            <button
-              onClick={e => handleClick('b')}
-              className="bg-gray ba br-100 ph2 pv1 mh2 white"
-            >
-              b
-            </button>
-          </div>
-        </div>
-
-      </footer>
+      <footer className="flex items-center justify-center pv2" />
     </section>
   )
 }
@@ -110,6 +109,7 @@ const typeIs = propEq('type')
 const enhance = compose(
   withReducer('app', 'dispatch', (state = {}, action) => {
     return {
+      title: titleReducer(state.title || 'Pixel Fun', action),
       board: boardReducer(state.board || defaultBoard, action),
       input: inputReducer(state.input || '', action),
       clicks: clicksReducer(
@@ -127,6 +127,7 @@ const enhance = compose(
     componentDidMount() {
       const props = this.props
       props.actions({
+        title: s => props.dispatch({ type: 'SET_TITLE', payload: s }),
         setPixel: (row, col, color) =>
           props.dispatch({
             type: 'SET_CELL_COLOR',
@@ -134,7 +135,7 @@ const enhance = compose(
           }),
         getPixel: (row, col) =>
           compose(nth(col), nth(row), prop('board'))(props.app),
-        getInput: () => props.app.input,
+        getInput: () => document.body.querySelector('input').value,
         setInput: v => props.dispatch({ type: 'SET_INPUT', payload: v }),
         onClick: (name, fn) => {
           props.dispatch({
@@ -196,6 +197,12 @@ function boardReducer(state = [], action) {
 
 function gridVisibleReducer(state = false, action) {
   return cond([[typeIs('TOGGLE_GRID'), always(!state)], [T, always(state)]])(
+    action
+  )
+}
+
+function titleReducer(state = '', action) {
+  return cond([[typeIs('SET_TITLE'), prop('payload')], [T, always(state)]])(
     action
   )
 }
