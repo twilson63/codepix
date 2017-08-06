@@ -9305,7 +9305,7 @@ var Component = function (props) {
                 function (row) { return React.createElement( 'div', { className: "cf" },
                     map(
                       function (cell) { return React.createElement( 'div', {
-                          className: "fl w1 h1 w2-ns h2-ns ba b--dotted animated zoomIn", style: { backgroundColor: cell.color } }); },
+                          onClick: function (e) { return props.app.pixelClick && props.app.pixelClick(cell); }, className: "fl w1 h1 w2-ns h2-ns ba b--dotted animated zoomIn", style: { backgroundColor: cell.color } }); },
                       row
                     )
                   ); },
@@ -9338,6 +9338,7 @@ var enhance = compose(
       label: labelReducer(state.label || 'Input', action),
       board: boardReducer(state.board || defaultBoard, action),
       input: inputReducer(state.input || '', action),
+      pixelClick: pixelClickReducer(state.pixelClick, action),
       clicks: clicksReducer(
         state.clicks || { a: function () { return console.log('args'); } },
         action
@@ -9360,6 +9361,12 @@ var enhance = compose(
         getPixel: function (row, col) { return compose(nth(col), nth(row), prop('board'))(props.app); },
         getInput: function () { return document.body.querySelector('input').value; },
         setInput: function (v) { return props.dispatch({ type: 'SET_INPUT', payload: v }); },
+        onPixelClick: function (fn) {
+          props.dispatch({
+            type: 'SET_PIXEL_CLICK',
+            payload: fn
+          });
+        },
         onClick: function (name, fn) {
           props.dispatch({
             type: 'SET_CLICK',
@@ -9401,6 +9408,13 @@ function clicksReducer(state, action) {
         prop('payload')
       )
     ],
+    [T, always(state)]
+  ])(action)
+}
+
+function pixelClickReducer(state, action) {
+  return cond([
+    [propEq('type', 'SET_PIXEL_CLICK'), prop('payload')],
     [T, always(state)]
   ])(action)
 }
